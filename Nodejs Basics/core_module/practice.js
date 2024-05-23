@@ -1,11 +1,17 @@
-const { readFileSync, writeFileSync,appendFileSync } = require('fs')
-console.log('start')
-const first = readFileSync('./content/first.txt', 'utf8')
-const second = readFileSync('./content/second.txt', 'utf8')
+const http = require("http");
 
-//Flag-a is used to append the content to the file
-appendFileSync(
-    './content/first.txt',
-    `Here is the result : ${first}, ${second}`,
-  )
-console.log("end");
+const server = http.createServer((req, res) => {
+  const url = req.url;
+
+  if (url === "/") {
+    res.write("Welcome to our home page");
+  } else if (url === "/about") {
+    res.write("Welcome to our about page");
+  } else {
+    res.write("Page not found");
+  }
+  console.log("Hello!!!");
+  res.end();
+});
+
+server.listen(5000);

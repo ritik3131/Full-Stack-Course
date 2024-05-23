@@ -1,3 +1,1 @@
 This is first file
-Here is the result : This is first file
-, This is Second file
