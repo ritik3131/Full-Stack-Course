@@ -4,13 +4,12 @@ const path = require('path')
 const app = express()
 
 // setup static and middleware
-
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, './navbar/index.html'))
   //Second way to access this html is to copy and paste the file and then server will directly servers the html
 })
-
 
 app.all('*', (req, res) => {
   res.status(404).send('resource not found')

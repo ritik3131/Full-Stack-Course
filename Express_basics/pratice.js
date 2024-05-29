@@ -1,99 +1,92 @@
-const express = require("express");
+const express = require('express')
+const app = express()
+let { people } = require('./data')
 
-const app = express();
-//localhost:5000/
-const path = require("path");
-
-// app.use(express.static('./public'))
-// http://localhost:5000/styles.css
-// http://localhost:5000/javascript.css
-// http://localhost:5000/logo.png
-//req => use => res
-const { products } = require("./data");
-app.get("/", (req, res) => {
-  res.send('<h1> Home Page</h1><a href="/api/products">products</a>');
-});
-
-app.get("/api/products", (req, res) => {
-  const newProducts = products.map((product) => {
-    const { id, name, image } = product;
-    return { id, name, image };
-  });
-
-  res.json(newProducts);
-});
-
-app.get("/api/products/:productID", (req, res) => {
-  // console.log(req.params);
-  const { productID } = req.params;
-  const singleProduct = products.find(
-    (product) => product.id === Number(productID)
-  );
-
-  if(!singleProduct){
-    res.status(200).send("<h1>Product is not found</h1>");
-  }
-
-  console.log(singleProduct);
-
-  return res.json(singleProduct);
-});
-
-app.get("/api/products/:productID/reviews/:reviewID", (req, res) => {
-  const { productID ,reviewID} = req.params;
-  console.log(productID,reviewID);
-  const singleProduct = products.find(
-    (product) => product.id === Number(productID)
-  );
-
-  console.log(singleProduct);
-  if(!singleProduct){
-    return res.status(200).send("<h1>Product is not found</h1>");
-  }
-
-
-  return res.json(singleProduct);
-});
-
-// localhost:5000/api/v1/query?search=a&limit=1
-app.get('/api/v1/query', (req, res) => {
-  // console.log(req.query)
-  const { search, limit } = req.query
-  let sortedProducts = [...products]
-  console.log(search,limit)
-  if (search) {
-    sortedProducts = sortedProducts.filter((product) => {
-      return product.name.startsWith(search)
-    })
-  }
-  if (limit) {
-    sortedProducts = sortedProducts.slice(0, Number(limit))
-  }
-  if (sortedProducts.length < 1) {
-    // res.status(200).send('no products matched your search');
-    return res.status(200).json({ sucess: true, data: [] })
-  }
-  res.status(200).json(sortedProducts)
+// static assets
+app.use(express.static('./method_public'))
+// parse form data
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+// name=ritik req.body={name:"ritik"}
+// req.body
+app.get('/api/people', (req, res) => {
+  res.status(200).json({ success: true, data: people })
 })
-// "{}"
 
-app.get("/about", (req, res) => {
-  res.status(404).send("About Page");
-});
+app.post('/login', (req, res) => {
+  const { name } = req.body
+  if (name) {
+    return res.status(200).send(`Welcome ${name}`)
+  }
+  res.status(401).send('Please Provide Credentials')
+})
 
-app.all("*", (req, res) => {
-  res.status(404).send("resource not found");
-});
+app.post('/api/people', (req, res) => {
+  console.log(req.body);
+  const { name } = req.body
+  if (!name) {
+    return res
+      .status(400)
+      .json({ success: false, msg: 'please provide name value' })
+  }
+  //Do some db stuff here
+  res.status(201).json({ success: true, person: name })
+})
 
-//all post put get delete
+app.post('/api/postman/people', (req, res) => {
+  const { name } = req.body
+  if (!name) {
+    return res
+      .status(400)
+      .json({ success: false, msg: 'please provide name value' })
+  }
+  const nameObj={
+    id:people.length + 1,
+    name: name
+  }
+  //Do some db stuff here
+  res.status(201).json({ success: true, data: [...people, nameObj] })
+})
 
-app.listen(5000, () => {
-  console.log("server is listening on port 5000...");
-});
+// app.post('/login',(req, res) => {
+//   console.log(req.body);
+//   res.send("Login Page");
+// })
+//id=1 name = ritik 
+// /api/people/:id
+//req.body={name:"ritik"}
 
-//get
-//post
-//put
-//delete
-//all
-//use
+app.put('/api/people/:id', (req, res) => {
+  const { id } = req.params
+  const { name } = req.body
+
+  const person = people.find((person) => person.id === Number(id))
+
+  if (!person) {
+    return res
+      .status(404)
+      .json({ success: false, msg: `no person with id ${id}` })
+  }
+  const newPeople = people.map((person) => {
+    if (person.id === Number(id)) {
+      person.name = name
+    }
+    return person
+  })
+  res.status(200).json({ success: true, data: newPeople })
+})
+
+app.delete('/api/people/:id', (req, res) => {
+  const person = people.find((person) => person.id === Number(req.params.id))
+  if (!person) {
+    return res
+      .status(404)
+      .json({ success: false, msg: `no person with id ${req.params.id}` })
+  }
+  const newPeople = people.filter(
+    (person) => person.id !== Number(req.params.id)
+  )
+  return res.status(200).json({ success: true, data: newPeople })
+})
+
+app.listen(5000);

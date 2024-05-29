@@ -13,6 +13,14 @@ app.get('/api/people', (req, res) => {
   res.status(200).json({ success: true, data: people })
 })
 
+app.post('/login', (req, res) => {
+  const { name } = req.body
+  if (name) {
+    return res.status(200).send(`Welcome ${name}`)
+  }
+  res.status(401).send('Please Provide Credentials')
+})
+
 app.post('/api/people', (req, res) => {
   const { name } = req.body
   if (!name) {
@@ -33,14 +41,6 @@ app.post('/api/postman/people', (req, res) => {
   }
   //Do some db stuff here
   res.status(201).json({ success: true, data: [...people, name] })
-})
-
-app.post('/login', (req, res) => {
-  const { name } = req.body
-  if (name) {
-    return res.status(200).send(`Welcome ${name}`)
-  }
-  res.status(401).send('Please Provide Credentials')
 })
 
 app.put('/api/people/:id', (req, res) => {
