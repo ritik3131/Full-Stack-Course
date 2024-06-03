@@ -1,0 +1,1 @@
+[{"id":1,"username":"Ritik!!!!","password":"abc","email":"ritik@gmail.com"},{"id":2,"username":"Ritik","password":"abc","email":"ritik@gmail.com1232"},{"id":3,"username":"Ritik","password":"abc","email":"ritik@gmail.com12321"}]
