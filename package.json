@@ -1,0 +1,15 @@
+{
+  "name": "full-stack-course",
+  "version": "1.0.0",
+  "description": "- [Intro PPT](https://docs.google.com/presentation/d/1xKJoY6a6rYOgarEV4FL__SlH2zcqPf2O/edit#slide=id.g2c9b4bcc39d_0_0)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "sequelize": "^6.37.3"
+  }
+}
