@@ -20,17 +20,18 @@ const writeUsers = async () => {
 
 const signup = async (req, res) => {
   const { username, password, email } = req.body;
+  const emailCheck = email.split("@");
   try {
-    const user = userData.find((user) => user.email === email);
-    if (user) {
-      return res.status(409).json({ error: "this user already exists" });
-    }
+      const user = userData.find((user) => user.email === email);
+      if (user) {
+        return res.status(409).json({ error: "this user already exists" });
+      }
 
-    const newPerson = { id: userData.length + 1, username, password, email };
-    userData.push(newPerson);
-    await writeUsers();
+      const newPerson = { id: userData.length + 1, username, password, email };
+      userData.push(newPerson);
+      await writeUsers();
 
-    res.status(201).json(newPerson);
+      res.status(201).json(newPerson);
   } catch (err) {
     res.status(400).json({ error: err });
   }
